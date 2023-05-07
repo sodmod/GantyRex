@@ -24,8 +24,8 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/customer_details/{accountnumber}")
-    public ResponseEntity<?> customerDetails(@PathVariable int accountnumber){
-        return customerServices.customerDetails(accountnumber);
+    public ResponseEntity<?> customerDetails(@PathVariable int accountNumber){
+        return customerServices.customerDetails(accountNumber);
     }
 
     @PutMapping(value = "/update/customer")
