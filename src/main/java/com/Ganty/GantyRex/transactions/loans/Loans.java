@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 import static javax.persistence.FetchType.EAGER;
 
@@ -36,10 +37,10 @@ public class Loans {
     private int loanYears;
     @ManyToMany(fetch = EAGER)
     @JoinColumn(name = "customers_id")
-    private Customers customers;
+    private Set<Customers> customers;
     private Date paymentDate;
 
-    public Loans(float principalPaid, float interestPaid, float monthlyRepayment, float newBalance, int loanYears, Date paymentDate, Customers customers) {
+    public Loans(float principalPaid, float interestPaid, float monthlyRepayment, float newBalance, int loanYears, Date paymentDate, Set<Customers> customers) {
         this.principalPaid = principalPaid;
         this.interestPaid = interestPaid;
         this.monthlyRepayment = monthlyRepayment;

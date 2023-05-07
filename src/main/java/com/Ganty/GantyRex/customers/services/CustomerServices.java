@@ -4,6 +4,8 @@ import com.Ganty.GantyRex.ExceptionalAdvice.Exceptions.CustomerNotFoundException
 import com.Ganty.GantyRex.customers.Customers;
 import com.Ganty.GantyRex.customers.repository.CustomersRepository;
 import com.Ganty.GantyRex.models.CustomerDTO;
+import com.Ganty.GantyRex.transactions.repos.SavingsRepository;
+import com.Ganty.GantyRex.transactions.savings.Savings;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerServices {
     private final CustomersRepository customersRepository;
-
+    private final SavingsRepository savingsRepository;
     public ResponseEntity<?> saveCustomer(@NonNull CustomerDTO customerDTO){
         if(customersRepository.existsByAccountNumber(customerDTO.getAccountNumber())){
             return ResponseEntity.status(404).body("account number already exist");
@@ -30,6 +32,8 @@ public class CustomerServices {
                 customerDTO.getAccountNumber()
         );
         customersRepository.save(customers);
+        Savings savings = new Savings(customers);
+        savingsRepository.save(savings);
         return ResponseEntity.ok("saved Successfully");
     }
     public ResponseEntity<?> getAllCustomers(){

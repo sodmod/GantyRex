@@ -1,7 +1,7 @@
 package com.Ganty.GantyRex.transactions.savings;
 
 public interface SavingsService {
-    float credit(float amount);
-    float debit(float amount);
+    void credit(long accountNumber, float amount);
+    void debit(long accountNumber, float amount);
     float savingsBalance();
 }
