@@ -1,5 +1,6 @@
-package com.Ganty.GantyRex.transactions.loans;
+package com.Ganty.GantyRex.transactions.repos;
 
+import com.Ganty.GantyRex.transactions.loans.Loans;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
