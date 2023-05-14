@@ -23,7 +23,7 @@ public class CustomerController {
         return customerServices.getAllCustomers();
     }
 
-    @GetMapping(value = "/customer_details/{accountnumber}")
+    @GetMapping(value = "/customer_details/{accountNumber}")
     public ResponseEntity<?> customerDetails(@PathVariable int accountNumber){
         return customerServices.customerDetails(accountNumber);
     }
