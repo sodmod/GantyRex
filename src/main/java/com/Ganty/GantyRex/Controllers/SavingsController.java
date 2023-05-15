@@ -16,12 +16,12 @@ public class SavingsController {
 
     @PostMapping(value = "/credit/{accountnumber}/{amount}")
     public ResponseEntity<?> credit(@PathVariable long accountnumber, @PathVariable float amount){
-        return transactionService.saveCredit(amount, accountnumber);
+        return transactionService.savingsCredit(amount, accountnumber);
     }
 
     @PostMapping(value = "/debit/{accountNumber}/{amount}")
     public ResponseEntity<?> debit(@PathVariable long accountNumber, @PathVariable float amount){
-        return transactionService.debit(accountNumber, amount);
+        return transactionService.savingsDebit(accountNumber, amount);
     }
 
 

@@ -1,8 +1,10 @@
 package com.Ganty.GantyRex.transactions.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class GuarantorsDTO {
     private String firstname;
     private String lastname;

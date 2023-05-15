@@ -13,18 +13,18 @@ public class TransactionService  {
     private final LoanServiceImpl loanService;
     private final SavingServicesImpl savingServices;
 
-    public String applyLoan(LoanDTO loanDTO){
-        loanService.applyLoad(loanDTO);
-        return null;
-    }
-
-    public ResponseEntity<?> saveCredit(float amount, long accountNumber){
+    public ResponseEntity<?> savingsCredit(float amount, long accountNumber){
         savingServices.credit(accountNumber, amount);
         return ResponseEntity.ok().body("success");
     }
 
-    public ResponseEntity<?> debit(long accountNumber, float amount) {
+    public ResponseEntity<?> savingsDebit(long accountNumber, float amount) {
         savingServices.debit(accountNumber, amount);
         return ResponseEntity.ok().body("success");
+    }
+
+    public ResponseEntity<?> applyLoan(LoanDTO loanDTO){
+        loanService.applyLoad(loanDTO);
+        return null;
     }
 }

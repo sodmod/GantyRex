@@ -1,14 +1,15 @@
 package com.Ganty.GantyRex.transactions.loans;
 
 import com.Ganty.GantyRex.customers.Customers;
+import com.Ganty.GantyRex.guarantors.Guarantors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
-import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.AUTO;
 
 @Data
 @Entity
@@ -16,39 +17,48 @@ import static javax.persistence.FetchType.EAGER;
 @NoArgsConstructor
 public class Loans {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Column(
-            columnDefinition = "float(24) default 0.0"
-    )
-    private float principalPaid;
-    @Column(
-            columnDefinition = "float(24) default 0.0"
-    )
+    @GeneratedValue(strategy = AUTO)
+    private long id;
+    @Column(nullable = false)
+    private float capitalBorrowed;
+    @Column(nullable = false)
+    private float moneyReturned;
+    @Column(nullable = false)
     private float interestPaid;
-    @Column(
-            columnDefinition = "float(24) default 0.0"
-    )
-    private float monthlyRepayment;
-    @Column(
-            columnDefinition = "float(24) default 0.0"
-    )
-    private float newBalance;
-    private int loanYears;
-    @ManyToMany(fetch = EAGER)
-    @JoinColumn(name = "customers_id")
-    private Set<Customers> customers;
-    private Date paymentDate;
 
-    public Loans(float principalPaid, float interestPaid, float monthlyRepayment, float newBalance, int loanYears, Date paymentDate, Set<Customers> customers) {
-        this.principalPaid = principalPaid;
+    @ManyToOne
+    @JoinColumn(
+            nullable = false,
+            name = "customersFK"
+    )
+    private Customers customers;
+    @ManyToMany
+    @JoinTable(
+            name = "loan_guarantors",
+            joinColumns = @JoinColumn(name = "loan_id"),
+            inverseJoinColumns = @JoinColumn(name = "guarantors_id")
+    )
+    private List<Guarantors> guarantors;
+    @Column(nullable = false)
+    private Date dateBorrowed;
+//    @Column(nullable = false)
+//    private Date dateToBeReturned;
+
+    public Loans
+            (
+            float capitalBorrowed,
+            float moneyReturned,
+            float interestPaid,
+            Customers customers,
+            Date dateBorrowed, List<Guarantors> guarantors)
+    {
+        this.capitalBorrowed = capitalBorrowed;
+        this.moneyReturned = moneyReturned;
         this.interestPaid = interestPaid;
-        this.monthlyRepayment = monthlyRepayment;
-        this.newBalance = newBalance;
-        this.loanYears = loanYears;
-        this.paymentDate = paymentDate;
         this.customers = customers;
+        this.dateBorrowed = dateBorrowed;
+        this.guarantors = guarantors;
+//        this.dateToBeReturned = dateToBeReturned;
     }
-
 
 }

@@ -2,10 +2,11 @@ package com.Ganty.GantyRex.transactions.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class LoanDTO {
-    private float amountBorrowed;
+    private float capitalBorrowed;
     private long accountNumber;
-    private int loanYears;
-    private GuarantorsDTO guarantorsDTO;
+    private List<GuarantorsDTO> guarantorsDTO;
 }
