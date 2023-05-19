@@ -1,9 +1,15 @@
 package com.Ganty.GantyRex.transactions.loans;
 
-import com.Ganty.GantyRex.transactions.dto.LoanDTO;
+import com.Ganty.GantyRex.transactions.dto.loansDTOs.ApplyLoansDTO;
+import com.Ganty.GantyRex.transactions.dto.loansDTOs.LoanDTOs;
+
+import java.util.List;
 
 public interface LoansService {
-    String applyLoad(LoanDTO loanDTO);
-    float loanPayment();
-    float loanBalance();
+    void applyLoad(ApplyLoansDTO applyLoansDTO);
+    float loanPayment(long accountNumber, float amount);
+    float loanBalance(float loanBalance, float amountToPay);
+
+    LoanDTOs loanStatus(long accountNumber);
+    List<LoanDTOs> findAllLoans();
 }

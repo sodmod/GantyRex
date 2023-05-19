@@ -1,6 +1,6 @@
 package com.Ganty.GantyRex.transactions;
 
-import com.Ganty.GantyRex.transactions.dto.LoanDTO;
+import com.Ganty.GantyRex.transactions.dto.loansDTOs.ApplyLoansDTO;
 import com.Ganty.GantyRex.transactions.loans.LoanServiceImpl;
 import com.Ganty.GantyRex.transactions.savings.SavingServicesImpl;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,22 @@ public class TransactionService  {
         return ResponseEntity.ok().body("success");
     }
 
-    public ResponseEntity<?> applyLoan(LoanDTO loanDTO){
-        loanService.applyLoad(loanDTO);
+    public ResponseEntity<?> applyLoan(ApplyLoansDTO applyLoansDTO){
+        loanService.applyLoad(applyLoansDTO);
+        return ResponseEntity.ok("You have successfully applied for Loan");
+    }
+
+    public ResponseEntity<?> loanPayment(long accountNumber, float amount){
+        loanService.loanPayment(accountNumber, amount);
         return null;
+    }
+
+    public ResponseEntity<?> loanStatus(long accountNumber) {
+        return ResponseEntity.ok().body(loanService.loanStatus(accountNumber));
+
+    }
+
+    public ResponseEntity<?> findAllLoans() {
+        return ResponseEntity.ok().body(loanService.findAllLoans());
     }
 }

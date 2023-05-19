@@ -50,7 +50,6 @@ public class CustomerServices {
                                         "account number is empty"
                                 )
                         );
-//
 
         CustomerDTO customerDTO = new CustomerDTO(
                 customers.getFirstname(),

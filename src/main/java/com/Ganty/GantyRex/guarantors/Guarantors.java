@@ -1,21 +1,24 @@
 package com.Ganty.GantyRex.guarantors;
 
 import com.Ganty.GantyRex.customers.Customers;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @NoArgsConstructor
 @Table
-@Data
+@Getter
+@Setter
+@ToString
 public class Guarantors {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = SEQUENCE)
     private Long id;
     @Column
     private String firstname;
@@ -29,7 +32,7 @@ public class Guarantors {
     private String address;
     @Column
     private String phonenumber;
-    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @ManyToOne
     @JoinTable(
             name = "customer_guarantors",
             joinColumns = @JoinColumn(

@@ -2,22 +2,27 @@ package com.Ganty.GantyRex.transactions.loans;
 
 import com.Ganty.GantyRex.customers.Customers;
 import com.Ganty.GantyRex.guarantors.Guarantors;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-import static javax.persistence.GenerationType.AUTO;
+import static javax.persistence.GenerationType.SEQUENCE;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "loan")
 @NoArgsConstructor
+@Component
 public class Loans {
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = SEQUENCE)
     private long id;
     @Column(nullable = false)
     private float capitalBorrowed;
@@ -25,7 +30,10 @@ public class Loans {
     private float moneyReturned;
     @Column(nullable = false)
     private float interestPaid;
-
+    @Column(columnDefinition = "float(25) default 0.00 ")
+    private float loanBalance;
+    @Column(columnDefinition = "boolean default false ")
+    private boolean completed;
     @ManyToOne
     @JoinColumn(
             nullable = false,
@@ -38,12 +46,10 @@ public class Loans {
             joinColumns = @JoinColumn(name = "loan_id"),
             inverseJoinColumns = @JoinColumn(name = "guarantors_id")
     )
+    @ToString.Include
     private List<Guarantors> guarantors;
     @Column(nullable = false)
     private Date dateBorrowed;
-//    @Column(nullable = false)
-//    private Date dateToBeReturned;
-
     public Loans
             (
             float capitalBorrowed,

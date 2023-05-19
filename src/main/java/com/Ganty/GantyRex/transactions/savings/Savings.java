@@ -1,15 +1,17 @@
 package com.Ganty.GantyRex.transactions.savings;
 
 import com.Ganty.GantyRex.customers.Customers;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 import static javax.persistence.GenerationType.AUTO;
 
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "savings")
 public class Savings {
@@ -22,10 +24,6 @@ public class Savings {
     @JoinColumn(name = "customerFK")
     private Customers customers;
 
-    public Savings (float accountBalance, Customers customers){
-        this.accountBalance = accountBalance;
-        this.customers = customers;
-    }
     public Savings(Customers customers){
         this.customers = customers;
     }

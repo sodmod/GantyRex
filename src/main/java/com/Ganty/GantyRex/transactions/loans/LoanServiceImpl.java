@@ -6,15 +6,20 @@ import com.Ganty.GantyRex.customers.repository.CustomersRepository;
 import com.Ganty.GantyRex.guarantors.Guarantors;
 import com.Ganty.GantyRex.guarantors.repository.GuarantorsRepository;
 import com.Ganty.GantyRex.models.container_classes.Interest;
+import com.Ganty.GantyRex.transactions.Transactions;
 import com.Ganty.GantyRex.transactions.dto.GuarantorsDTO;
-import com.Ganty.GantyRex.transactions.dto.LoanDTO;
+import com.Ganty.GantyRex.transactions.dto.loansDTOs.ApplyLoansDTO;
+import com.Ganty.GantyRex.transactions.dto.loansDTOs.LoanDTOs;
 import com.Ganty.GantyRex.transactions.repos.LoanRepository;
+import com.Ganty.GantyRex.transactions.repos.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -22,18 +27,25 @@ public class LoanServiceImpl implements LoansService{
     private final CustomersRepository customersRepository;
     private final GuarantorsRepository guarantorsRepository;
     private final LoanRepository loanRepository;
+    private final TransactionRepository transactionRepository;
+    @Autowired
+    private Loans loans;
+    @Autowired
+    private Customers customers;
+
     @Override
-    public String applyLoad(LoanDTO loanDTO) {
-        Customers customers =
+    public void applyLoad(ApplyLoansDTO applyLoansDTO) {
+        customers =
                 customersRepository
-                        .findByAccountNumber(loanDTO.getAccountNumber())
+                        .findByAccountNumber(applyLoansDTO.getAccountNumber())
                         .orElseThrow(
                                 ()-> new CustomerNotFoundException(
-                                        loanDTO.getAccountNumber(),
-                                        "customernot found")
+                                        applyLoansDTO.getAccountNumber(),
+                                        "customer not found")
                         );
+
         List<Guarantors> guarantorsList = new ArrayList<>();
-        for (GuarantorsDTO guarantorsDTO: loanDTO.getGuarantorsDTO()) {
+        for (GuarantorsDTO guarantorsDTO: applyLoansDTO.getGuarantorsDTO()) {
             Guarantors guarantors = new Guarantors(
                     guarantorsDTO.getFirstname(),
                     guarantorsDTO.getLastname(),
@@ -47,11 +59,11 @@ public class LoanServiceImpl implements LoansService{
             guarantorsList.add(guarantors);
         }
 
-        Interest interest = getValues(loanDTO.getCapitalBorrowed());
+        Interest interest = getValues(applyLoansDTO.getCapitalBorrowed());
 
-        Loans loans =
+        loans =
                 new Loans(
-                        loanDTO.getCapitalBorrowed(),
+                        applyLoansDTO.getCapitalBorrowed(),
                         interest.getTotalMoneyToBeReturned(),
                         interest.getInterestToBePaid(),
                         customers,
@@ -59,23 +71,91 @@ public class LoanServiceImpl implements LoansService{
                         guarantorsList
                 );
         loanRepository.save(loans);
-        return null;
+
+        Transactions transactions = new Transactions(loans,customers, applyLoansDTO.getCapitalBorrowed(), UUID.randomUUID().toString(),new Date());
+        transactionRepository.save(transactions);
     }
 
     @Override
-    public float loanPayment() {
+    public float loanPayment(long accountNumber, float amount) {
+
+        loans =
+                loanRepository.findByCustomers(
+                        customersRepository
+                                .findByAccountNumber(accountNumber)
+                                .orElseThrow(
+                                        ()-> new CustomerNotFoundException(
+                                                accountNumber,
+                                                "customer not found"
+                                        )
+                                ));
+        loans.setLoanBalance(loanBalance(loans.getLoanBalance(), amount));
+        System.out.println(loans);
+        loanRepository.save(loans);
+
         return 0;
     }
 
     @Override
-    public float loanBalance() {
-        return 0;
+    public float loanBalance(float loanBalance, float amountPaid) {
+        return loanBalance - amountPaid;
+    }
+
+    @Override
+    public LoanDTOs loanStatus(long accountNumber) {
+        loans =
+                loanRepository.findByCustomers(customersRepository.
+                        findByAccountNumber(accountNumber)
+                        .orElseThrow(
+                                ()-> new CustomerNotFoundException(
+                                        accountNumber,
+                                        "account number not found"
+                                )
+                        ));
+        return
+                new LoanDTOs(
+                        loans.getCustomers().getFirstname(),
+                        loans.getCustomers().getLastname(),
+                        loans.getCapitalBorrowed(),
+                        loans.getMoneyReturned(),
+                        loans.getLoanBalance(),
+                        loans.isCompleted()
+                );
+    }
+
+    @Override
+    public List<LoanDTOs> findAllLoans() {
+        List<Loans> loans = loanRepository.findAll();
+        List<LoanDTOs> loanDTOsList = new ArrayList<>();
+        for (Loans loans1: loans) {
+            LoanDTOs loanDTOs =
+                    new LoanDTOs(
+                            loans1.getCustomers().getFirstname(),
+                            loans1.getCustomers().getLastname(),
+                            loans1.getCapitalBorrowed(),
+                            loans1.getMoneyReturned(),
+                            loans1.getLoanBalance(),
+                            loans1.isCompleted()
+                    );
+            loanDTOsList.add(loanDTOs);
+        }
+        return loanDTOsList;
     }
 
     Interest getValues(float capitalBorrowed){
         double interest = 15;
-
-        return new Interest(interest,interestToBePaid(interest, capitalBorrowed),totalMoneyToBeReturned(interest, capitalBorrowed));
+        return
+                new Interest(
+                        interest,
+                        interestToBePaid(
+                                interest,
+                                capitalBorrowed
+                        ),
+                        totalMoneyToBeReturned(
+                                interest,
+                                capitalBorrowed
+                        )
+                );
     }
 
     private float totalMoneyToBeReturned(double interest, float capitalBorrowed){
@@ -85,5 +165,4 @@ public class LoanServiceImpl implements LoansService{
     private float interestToBePaid(double interest, float capitalBorrowed){
         return (float) ((interest/100) * capitalBorrowed);
     }
-
 }

@@ -1,16 +1,22 @@
 package com.Ganty.GantyRex.customers;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "customers")
+@Component
 public class Customers {
 
     @Id
@@ -63,4 +69,5 @@ public class Customers {
         this.phonenumber = phonenumber;
         this.accountNumber = accountNumber;
     }
+
 }
