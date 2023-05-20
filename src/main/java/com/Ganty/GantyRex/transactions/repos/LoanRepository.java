@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface LoanRepository extends JpaRepository<Loans, Long> {
 
     Optional<Loans> findByCustomers(Customers customers);
+    boolean existsByCustomers(Customers customers);
     @Query(value = "select u.completed from Loans u where u.customers = ?1")
     boolean findByCompleted(Customers customers);
+
 }

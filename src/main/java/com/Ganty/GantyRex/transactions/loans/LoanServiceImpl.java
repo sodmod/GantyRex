@@ -44,36 +44,69 @@ public class LoanServiceImpl implements LoansService{
                         );
 
         List<Guarantors> guarantorsList = new ArrayList<>();
-        for (GuarantorsDTO guarantorsDTO: applyLoansDTO.getGuarantorsDTO()) {
-            Guarantors guarantors = new Guarantors(
-                    guarantorsDTO.getFirstname(),
-                    guarantorsDTO.getLastname(),
-                    guarantorsDTO.getOthername(),
-                    guarantorsDTO.getEmail(),
-                    guarantorsDTO.getAddress(),
-                    guarantorsDTO.getPhonenumber(),
-                    customers
-            );
-            guarantorsRepository.save(guarantors);
-            guarantorsList.add(guarantors);
-        }
+        if (loanRepository.existsByCustomers(customers)){
+            if (loanRepository.findByCompleted(customers)){
+                for (GuarantorsDTO guarantorsDTO: applyLoansDTO.getGuarantorsDTO()) {
+                    Guarantors guarantors = new Guarantors(
+                            guarantorsDTO.getFirstname(),
+                            guarantorsDTO.getLastname(),
+                            guarantorsDTO.getOthername(),
+                            guarantorsDTO.getEmail(),
+                            guarantorsDTO.getAddress(),
+                            guarantorsDTO.getPhonenumber(),
+                            customers
+                    );
+                    guarantorsRepository.save(guarantors);
+                    guarantorsList.add(guarantors);
+                }
+                Interest interest = getValues(applyLoansDTO.getCapitalBorrowed());
+                loans =
+                        new Loans(
+                                applyLoansDTO.getCapitalBorrowed(),
+                                interest.getTotalMoneyToBeReturned(),
+                                interest.getInterestToBePaid(),
+                                interest.getTotalMoneyToBeReturned(),
+                                customers,
+                                new Date(),
+                                guarantorsList
+                        );
+                loanRepository.save(loans);
+                Transactions transactions = new Transactions(loans,customers, applyLoansDTO.getCapitalBorrowed(), UUID.randomUUID().toString(),new Date());
+                transactionRepository.save(transactions);
+            } else {
+                throw new RuntimeException();
+            }
 
-        Interest interest = getValues(applyLoansDTO.getCapitalBorrowed());
-
-        loans =
-                new Loans(
-                        applyLoansDTO.getCapitalBorrowed(),
-                        interest.getTotalMoneyToBeReturned(),
-                        interest.getInterestToBePaid(),
-                        interest.getTotalMoneyToBeReturned(),
-                        customers,
-                        new Date(),
-                        guarantorsList
+        }else{
+            for (GuarantorsDTO guarantorsDTO: applyLoansDTO.getGuarantorsDTO()) {
+                Guarantors guarantors = new Guarantors(
+                        guarantorsDTO.getFirstname(),
+                        guarantorsDTO.getLastname(),
+                        guarantorsDTO.getOthername(),
+                        guarantorsDTO.getEmail(),
+                        guarantorsDTO.getAddress(),
+                        guarantorsDTO.getPhonenumber(),
+                        customers
                 );
-        loanRepository.save(loans);
+                guarantorsRepository.save(guarantors);
+                guarantorsList.add(guarantors);
+            }
+            Interest interest = getValues(applyLoansDTO.getCapitalBorrowed());
+            loans =
+                    new Loans(
+                            applyLoansDTO.getCapitalBorrowed(),
+                            interest.getTotalMoneyToBeReturned(),
+                            interest.getInterestToBePaid(),
+                            interest.getTotalMoneyToBeReturned(),
+                            customers,
+                            new Date(),
+                            guarantorsList
+                    );
+            loanRepository.save(loans);
 
-        Transactions transactions = new Transactions(loans,customers, applyLoansDTO.getCapitalBorrowed(), UUID.randomUUID().toString(),new Date());
-        transactionRepository.save(transactions);
+            Transactions transactions = new Transactions(loans,customers, applyLoansDTO.getCapitalBorrowed(), UUID.randomUUID().toString(),new Date());
+            transactionRepository.save(transactions);
+        }
     }
     @Override
     public Object loanPayment(long accountNumber, float amount) {
@@ -107,7 +140,6 @@ public class LoanServiceImpl implements LoansService{
                     );
             transactionRepository.save(transactions);
             loans = loanRepository.save(loans);
-
 
             return new LoanDTOs(
                     loans.getCustomers().getFirstname(),
