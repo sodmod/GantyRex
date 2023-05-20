@@ -1,4 +1,4 @@
-package com.Ganty.GantyRex.ExceptionalAdvice.Exceptions;
+package com.Ganty.GantyRex.exceptionalAdvice.exceptions;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 

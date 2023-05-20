@@ -1,8 +1,9 @@
 package com.Ganty.GantyRex.transactions.loans;
 
-import com.Ganty.GantyRex.ExceptionalAdvice.Exceptions.CustomerNotFoundException;
+import com.Ganty.GantyRex.exceptionalAdvice.exceptions.CustomerNotFoundException;
 import com.Ganty.GantyRex.customers.Customers;
 import com.Ganty.GantyRex.customers.repository.CustomersRepository;
+import com.Ganty.GantyRex.exceptionalAdvice.exceptions.LoanException;
 import com.Ganty.GantyRex.guarantors.Guarantors;
 import com.Ganty.GantyRex.guarantors.repository.GuarantorsRepository;
 import com.Ganty.GantyRex.models.container_classes.Interest;
@@ -132,15 +133,24 @@ public class LoanServiceImpl implements LoansService{
             loans.setLoanBalance(loanBalance(loans.getLoanBalance(), amount));
             if (loans.getLoanBalance() <= 0.00){
                 loans.setCompleted(true);
-            }
-            Transactions transactions =
-                    new Transactions(loans,customers,
-                            amount,oldOutstanding,
-                            loans.getLoanBalance(),UUID.randomUUID().toString(),new Date()
-                    );
-            transactionRepository.save(transactions);
-            loans = loanRepository.save(loans);
+                Transactions transactions =
+                        new Transactions(loans,customers,
+                                amount,oldOutstanding,
+                                loans.getLoanBalance(),UUID.randomUUID().toString(),new Date()
+                        );
+                loans = loanRepository.save(loans);
+                transactionRepository.save(transactions);
 
+            }else{
+                Transactions transactions =
+                        new Transactions(loans,customers,
+                                amount,oldOutstanding,
+                                loans.getLoanBalance(),UUID.randomUUID().toString(),new Date()
+                        );
+                loans = loanRepository.save(loans);
+                transactionRepository.save(transactions);
+
+            }
             return new LoanDTOs(
                     loans.getCustomers().getFirstname(),
                     loans.getCustomers().getLastname(),
@@ -150,7 +160,7 @@ public class LoanServiceImpl implements LoansService{
                     loans.isCompleted()
             );
         }else{
-            return 0;
+            throw new LoanException();
         }
 
 

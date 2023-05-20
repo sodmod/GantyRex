@@ -1,7 +1,7 @@
 package com.Ganty.GantyRex.transactions.savings;
 
-import com.Ganty.GantyRex.ExceptionalAdvice.Exceptions.CustomerNotFoundException;
-import com.Ganty.GantyRex.ExceptionalAdvice.Exceptions.InsufficientBalanceException;
+import com.Ganty.GantyRex.exceptionalAdvice.exceptions.CustomerNotFoundException;
+import com.Ganty.GantyRex.exceptionalAdvice.exceptions.InsufficientBalanceException;
 import com.Ganty.GantyRex.customers.Customers;
 import com.Ganty.GantyRex.customers.repository.CustomersRepository;
 import com.Ganty.GantyRex.transactions.Transactions;
@@ -110,9 +110,6 @@ public class SavingServicesImpl implements SavingsService{
         if(initialAmount > 0){
             return initialAmount - amountWithdrawn;
         }
-        throw new InsufficientBalanceException(
-                accountNumber,
-                "insufficient balance"
-        );
+        throw new InsufficientBalanceException(accountNumber);
     }
 }

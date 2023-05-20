@@ -1,6 +1,6 @@
 package com.Ganty.GantyRex.customers.services;
 
-import com.Ganty.GantyRex.ExceptionalAdvice.Exceptions.CustomerNotFoundException;
+import com.Ganty.GantyRex.exceptionalAdvice.exceptions.CustomerNotFoundException;
 import com.Ganty.GantyRex.customers.Customers;
 import com.Ganty.GantyRex.customers.repository.CustomersRepository;
 import com.Ganty.GantyRex.models.CustomerDTO;

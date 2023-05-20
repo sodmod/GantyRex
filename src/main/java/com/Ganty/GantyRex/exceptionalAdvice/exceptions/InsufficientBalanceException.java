@@ -1,4 +1,4 @@
-package com.Ganty.GantyRex.ExceptionalAdvice.Exceptions;
+package com.Ganty.GantyRex.exceptionalAdvice.exceptions;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -11,12 +11,11 @@ public class InsufficientBalanceException extends RuntimeException{
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public InsufficientBalanceException (long accountnumber, String message){
+    public InsufficientBalanceException (long accountNumber){
         super(
                 String.format(
                         "insufficient balance account number %d",
-                        accountnumber,
-                        message)
+                        accountNumber)
         );
     }
 }
