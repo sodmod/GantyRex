@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LoansService {
     void applyLoad(ApplyLoansDTO applyLoansDTO);
-    float loanPayment(long accountNumber, float amount);
+    Object loanPayment(long accountNumber, float amount);
     float loanBalance(float loanBalance, float amountToPay);
 
     LoanDTOs loanStatus(long accountNumber);

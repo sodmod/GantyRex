@@ -29,8 +29,7 @@ public class TransactionService  {
     }
 
     public ResponseEntity<?> loanPayment(long accountNumber, float amount){
-        loanService.loanPayment(accountNumber, amount);
-        return null;
+        return ResponseEntity.ok().body(loanService.loanPayment(accountNumber, amount));
     }
 
     public ResponseEntity<?> loanStatus(long accountNumber) {

@@ -55,16 +55,17 @@ public class Loans {
             float capitalBorrowed,
             float moneyReturned,
             float interestPaid,
+            float outstandingLoan,
             Customers customers,
             Date dateBorrowed, List<Guarantors> guarantors)
     {
         this.capitalBorrowed = capitalBorrowed;
         this.moneyReturned = moneyReturned;
         this.interestPaid = interestPaid;
+        this.loanBalance = outstandingLoan;
         this.customers = customers;
         this.dateBorrowed = dateBorrowed;
         this.guarantors = guarantors;
-//        this.dateToBeReturned = dateToBeReturned;
     }
 
 }
